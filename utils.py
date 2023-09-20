@@ -104,7 +104,7 @@ class Model:
         self.chain = None
         self.creation_date = None
 
-    def train(self, store="FAISS") -> Optional[True, False]:
+    def train(self, store="FAISS") -> bool:
         """Train new Q/A chatbot with data from those urls"""
 
         try:
