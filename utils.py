@@ -107,28 +107,23 @@ class Model:
     def train(self, store="FAISS"):
         """Train new Q/A chatbot with data from those urls"""
 
-        if os.environ['OPENAI_API_KEY'] is None:
-            raise ValueError("OPENAI_API_KEY must be provided.")
-        elif store != "FAISS" and os.environ['PINECONE_API_KEY'] is None:
-            raise ValueError("PINECONE_API_KEY must be provided.")
-        else:
-            try:
-                if self.urls is None:
-                    raise ValueError("You must provide a list of URLs.")
+        try:
+            if self.urls is None:
+                raise ValueError("You must provide a list of URLs.")
+            else:
+                data = extract_data_from_urls(self.urls)
+                data = split_data(data)
+                if store == "FAISS":
+                    self.vectorstore = saving_in_vectorstore(data)
                 else:
-                    data = extract_data_from_urls(self.urls)
-                    data = split_data(data)
-                    if store == "FAISS":
-                        self.vectorstore = saving_in_vectorstore(data)
-                    else:
-                        self.vectorstore = saving_in_vectorstore(data, index_name="chatbot", store=store)
+                    self.vectorstore = saving_in_vectorstore(data, index_name="chatbot", store=store)
 
-                    self.chain = creating_chain(self.vectorstore, self.llm)
+                self.chain = creating_chain(self.vectorstore, self.llm)
 
-                    self.creation_date = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
+                self.creation_date = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
 
-            except Exception as e:
-                print("Error while training the model : " + str(e))
+        except Exception as e:
+            print("Error while training the model : " + str(e))
 
     def answer(self, query: str) -> str:
         """Answering the question."""
