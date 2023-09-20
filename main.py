@@ -16,15 +16,17 @@ train_button = st.sidebar.button("Train")
 
 if train_button:
     model = Model(urls=urls.split("\n"), llm=OpenAI(openai_api_key=OpenAPI_key))
-    model.train()
+    model_trained = model.train()
 
+    if model_trained:
+        st.sidebar.success("Model trained !")
     # Q/A fields
 
-    st.header("Ask me anything !")
+        st.header("Ask me anything !")
 
-    question = st.text_input("Question")
-    ask_button = st.button("Ask")
+        question = st.text_input("Question")
+        ask_button = st.button("Ask")
 
-    if ask_button:
-        answer = model.answer(question)
-        st.write(answer)
+        if ask_button:
+            answer = model.answer(question)
+            st.write(answer)

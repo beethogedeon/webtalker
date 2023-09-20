@@ -104,7 +104,7 @@ class Model:
         self.chain = None
         self.creation_date = None
 
-    def train(self, store="FAISS"):
+    def train(self, store="FAISS") -> Optional[True, False]:
         """Train new Q/A chatbot with data from those urls"""
 
         try:
@@ -122,8 +122,11 @@ class Model:
 
                 self.creation_date = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
 
+                return True
+
         except Exception as e:
             print("Error while training the model : " + str(e))
+            return False
 
     def answer(self, query: str) -> str:
         """Answering the question."""
@@ -135,5 +138,3 @@ class Model:
             return result
         except Exception as e:
             print("Error while answering the question : " + str(e))
-
-
